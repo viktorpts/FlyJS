@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../js/server/Player.js"],"names":["Player","constructor"],"mappings":";;;;;AAAe,MAAMA,MAAN,CAAa;AACxBC,kBAAc,CAEb;AAHuB;kBAAPD,M","file":"Player.js","sourcesContent":["export default class Player {\r\n    constructor() {\r\n\r\n    }\r\n}"]}

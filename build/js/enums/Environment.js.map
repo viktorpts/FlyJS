@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../js/enums/Environment.js"],"names":["CLIENT","SERVER"],"mappings":";;;;;kBAAe;AACXA,YAAQ,QADG;AAEXC,YAAQ;AAFG,C","file":"Environment.js","sourcesContent":["export default {\r\n    CLIENT: 'client',\r\n    SERVER: 'server'\r\n}"]}
