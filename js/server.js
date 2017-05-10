@@ -1,3 +1,10 @@
+import Game from './game.js';
+import Environment from './enums/Environment.js';
+import Remote from './remote/Remote.js';
+import SceneComposer from './composers/SceneComposer.js';
+
+console.log('Loading components...');
+
 let express = require('express');
 let app = express();
 let server = require('http').Server(app);
@@ -10,6 +17,7 @@ app.use('/node_modules/systemjs/dist', express.static(path.join(__dirname, '/../
 app.use('/build/js', express.static(path.join(__dirname, '/../..') + '/build/js'));
 app.use('/src', express.static(path.join(__dirname, '/../..') + '/src'));
 
+console.log('Opening sockets...');
 let io = require('socket.io')(server);
 
 let CONNECTIONS = new Map();
@@ -18,6 +26,8 @@ let PLAYERS = new Map();
 io.sockets.on('connection', function (socket) {
     CONNECTIONS.set(socket.id, socket);
     let player = {x: 0, y: 0, direction: 0};
+    // Send scene to new player
+    socket.emit('initScene', game.scene.serialize());
     // Broadcast to other players
     socket.broadcast.emit('newPlayer', {id: socket.id});
     // Add existing players
@@ -29,7 +39,6 @@ io.sockets.on('connection', function (socket) {
 
     // Report active connections
     console.log('Client connected with ID ' + socket.id);
-    console.log(PLAYERS);
 
     // Attach packet listeners
     socket.on('disconnect', function (data) {
@@ -46,9 +55,20 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
+let game = new Game(Environment.SERVER, {
+    composer: new SceneComposer(Environment.SERVER),
+    remote: new Remote(Environment.SERVER, io)
+});
+
+console.log('Initializing game...');
+game.start();
+
+console.log('Starting server on port 3000...');
 server.listen(3000);
 
-setInterval(update, 15);
+console.log('Ready.');
+
+//setInterval(update, 15);
 
 function update() {
     let packet = {};

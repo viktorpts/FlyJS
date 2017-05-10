@@ -1,4 +1,4 @@
-import Sprite from '../enums/Sprite.js';
+import SpriteType from '../enums/SpriteType.js';
 
 let required = 0;
 let loaded = 0;
@@ -7,11 +7,11 @@ let callback = () => {};
 
 function init(cb) {
     callback = cb;
-    for (let sprite in Sprite) {
-        if (Sprite.hasOwnProperty(sprite)) {
-            palette[Sprite[sprite]] = new Image();
-            palette[Sprite[sprite]].src = 'src/' + Sprite[sprite] + '.png';
-            palette[Sprite[sprite]].onload = onLoad;
+    for (let sprite in SpriteType) {
+        if (SpriteType.hasOwnProperty(sprite)) {
+            palette[SpriteType[sprite]] = new Image();
+            palette[SpriteType[sprite]].src = 'src/' + SpriteType[sprite] + '.png';
+            palette[SpriteType[sprite]].onload = onLoad;
             required++;
         }
     }

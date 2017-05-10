@@ -1,5 +1,5 @@
 import Character from './Character.js';
-import Sprite from '../../enums/Sprite.js';
+import Sprite from '../../enums/SpriteType.js';
 
 export default class Player extends Character {
     constructor(id) {

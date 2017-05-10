@@ -1,52 +1,59 @@
-import Sprite from '../enums/Sprite.js';
+import Layer from './Layer.js';
 
 export default class Renderer {
     constructor(canvas, palette) {
         this.canvas = canvas;
         this.palette = palette;
         this.ctx = this.canvas.getContext('2d');
+
+        this.layers = [
+            new Layer(0.2),
+            new Layer(0.4),
+            new Layer(0.6),
+            new Layer(0.8),
+            new Layer(1), // Particle effects
+            new Layer(1), // Main layer [5]
+            new Layer(2),
+            new Layer(4)
+        ];
     }
 
-    draw(scene, x = 0, y = 0) {
+    addObject(graphicsComponent, layerId) {
+        this.layers[layerId].addObject(graphicsComponent);
+    }
+
+    beginDraw(x = 0, y = 350) {
         this.ctx.clearRect(0, 0, 800, 600);
 
         // Center camera
         this.ctx.save();
         this.ctx.translate(x, y);
+        this.ctx.scale(1, 1);
 
-        // Draw scenery
-        for (let i = 0; i < scene.static.length; i++) {
-            this.drawObject(scene.static[i]);
-        }
-
+        // Draw ground
         this.ctx.beginPath();
         this.ctx.moveTo(-5000, 550);
         this.ctx.lineTo(5000, 550);
         this.ctx.stroke();
+    }
 
-        // Draw entities
-        for (let i = 0; i < scene.dynamic.length; i++) {
-            this.drawObject(scene.dynamic[i]);
-        }
-
+    endDraw() {
         this.ctx.restore();
     }
 
-    drawObject(obj) {
+    drawObject(graphicsComponent) {
+        let obj = graphicsComponent.owner;
+
         this.ctx.save();
 
         this.ctx.translate(obj.x, obj.y);
         this.ctx.rotate(obj.direction);
 
-        let img = this.palette[obj.sprite];
-        let w = img.width * obj.scale;
-        let h = img.height * obj.scale;
+        let img = this.palette[graphicsComponent.sprite];
+        let w = img.width * graphicsComponent.scale;
+        let h = img.height * graphicsComponent.scale;
         let x = -w * 0.5;
         let y = -h * 0.5;
-
-        if (obj.sprite == Sprite.SMOKE) {
-            this.ctx.globalAlpha = obj.life / 100;
-        }
 
         this.ctx.drawImage(img, x, y, w, h);
 
@@ -54,6 +61,40 @@ export default class Renderer {
 
         // Debug info
         //this.ctx.fillText((obj.velX * obj.velX + obj.velY * obj.velY).toFixed(2), obj.x - 20, obj.y - 20);
+    }
+
+    // TODO dynamic screen size
+    draw(x = 0, y = 0) {
+        this.ctx.clearRect(0, 0, 800, 600);
+
+        // Center camera
+        this.ctx.save();
+
+        for (let layer of this.layers) {
+            this.drawLayer(layer, x, y);
+        }
+
+        // Draw ground
+        this.ctx.translate(x, y);
+        this.ctx.beginPath();
+        this.ctx.moveTo(-5000, 550);
+        this.ctx.lineTo(5000, 550);
+        this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    drawLayer(layer, x, y) {
+        this.ctx.save();
+        // TODO check scaling and scrolling
+        this.ctx.scale(layer.scale, layer.scale);
+        this.ctx.translate(x, y);
+
+        for (let obj of layer.graphicsComponents) {
+            this.drawObject(obj[1]);
+        }
+
+        this.ctx.restore();
     }
 
     drawControls(input) {

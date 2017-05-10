@@ -1,5 +1,5 @@
 import Backdrop from './Backdrop.js';
-import Sprite from '../../enums/Sprite.js';
+import Sprite from '../../enums/SpriteType.js';
 
 export default class Cloud extends Backdrop {
     constructor(x, y) {
