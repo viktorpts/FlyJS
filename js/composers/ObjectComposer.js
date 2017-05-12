@@ -10,6 +10,7 @@ import HorizontalScroll from '../components/HorizontalScroll.js';
 import HorizontalWarp from '../components/HorizontalWarp.js';
 import SimpleAi from '../components/ai/SimpleAi.js';
 import RemotePosition from '../components/RemotePosition.js';
+import RemoteSync from '../components/RemoteSync.js';
 import GraphicsComposer from './GraphicsComposer.js';
 
 
@@ -48,7 +49,7 @@ export default class ObjectComposer {
     }
 
     // CLIENT ONLY
-    makePlayer(x, y, dir) {
+    makePlayer(x, y, dir, remoteId) {
         let player = new Entity(ObjectType.SHIP, x, y, dir);
 
         let body = new PhysicsBody(player);
@@ -57,9 +58,12 @@ export default class ObjectComposer {
         input.attachEventListeners(window);
         let controls = new PlayerControl(player, input);
 
+        let remoteSync = new RemoteSync(player, remoteId);
+
         player.addComponent(body);
         player.addComponent(graphics);
         player.addComponent(controls);
+        player.addComponent(remoteSync);
 
         return player;
     }

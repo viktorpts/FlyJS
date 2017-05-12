@@ -1,12 +1,11 @@
 import Component from './Component.js';
 import ServiceLocator from '../utility/ServiceLocator.js';
 
-export default class PlayerControl extends Component {
+export default class RemoteControl extends Component {
     constructor(owner, input) {
         super(owner);
 
         this.input = input;
-        ServiceLocator.Remote.registerControls(input);
     }
 
     update() {
@@ -28,6 +27,5 @@ export default class PlayerControl extends Component {
             this.owner.shoot();
         }
         */
-        ServiceLocator.Renderer.debug[0] = 'Local player position: ' + this.owner.x.toFixed(0) + ':' + this.owner.y.toFixed(0);
     }
 }

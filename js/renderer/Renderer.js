@@ -17,6 +17,9 @@ export default class Renderer {
             new Layer(1.25),
             new Layer(1.5)
         ];
+
+        // Console
+        this.debug = ['', '', '', '', ''];
     }
 
     addObject(graphicsComponent) {
@@ -66,6 +69,8 @@ export default class Renderer {
         this.ctx.stroke();
 
         this.ctx.restore();
+
+        this.drawDebug();
     }
 
     drawLayer(layer, x, y) {
@@ -111,5 +116,12 @@ export default class Renderer {
         }
 
         this.ctx.restore();
+    }
+
+    drawDebug() {
+        for (let i = 0; i < this.debug.length; i++) {
+            let line = this.debug[i];
+            this.ctx.fillText(line, 5, 15 + 12 * i);
+        }
     }
 }

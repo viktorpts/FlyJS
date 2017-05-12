@@ -1,6 +1,5 @@
 import Config from './config.js';
 import Environment from './enums/Environment.js';
-import Player from './objects/dynamic/Player.js';
 import Scene from './objects/Scene.js';
 import ObjectComposer from './composers/ObjectComposer.js';
 import ServiceLocator from './utility/ServiceLocator.js';
@@ -14,9 +13,31 @@ export default class Game {
         this.lastFrame = null;
         this.delta = 0; // Milliseconds
 
-        // TODO add components based on environment
         this.markDelta = {};
         this.init(sceneComposer);
+    }
+
+    // TODO move/relay to remote?
+    playerJoined(playerPosition) {
+        let player = this.composer.makeShip(playerPosition.x, playerPosition.y, playerPosition.direction);
+        this.scene.addObject(player);
+        console.log(playerPosition.remoteId + ' joined');
+
+        return player;
+    }
+
+    playerLeft(playerId) {
+        if (this.environment === Environment.SERVER) {
+            this.scene.removeObject(playerId);
+        } else if (this.environment === Environment.CLIENT) {
+            console.log(playerId + ' left');
+            this.scene.removeObject(ServiceLocator.Remote.remoteComponents.get(playerId).owner.id);
+        }
+    }
+
+    joinSuccess(data) {
+        this.player = this.composer.makePlayer(data.x, data.y, data.direction, data.remoteId);
+        this.scene.addObject(this.player);
     }
 
     init(sceneComposer) {
@@ -37,13 +58,6 @@ export default class Game {
                 this.lastFrame = currentFrame;
                 return delta;
             };
-            // TODO add input, register player with server
-
-            // TODO add player from server after request
-            // TODO player object ID must be set from provider!
-            this.player = this.composer.makePlayer(0, -550, 0);
-            this.player.id = 'localPlayer';
-            this.scene.addObject(this.player);
         }
 
         // TODO maybe composer not necessary?

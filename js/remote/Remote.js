@@ -7,6 +7,7 @@ export default class Remote {
         this.timer = null;
         this.scene = null;
         this.remoteComponents = new Map();
+        this.input = {};
     }
 
     addRemote(remoteComponent) {
@@ -21,39 +22,17 @@ export default class Remote {
         this.scene = scene;
     }
 
+    registerControls(input) {
+        this.input = input;
+    }
 
     // Receive scene delta from server
     step(data) {
-        /*
-         for (let [id, obj] of this.remoteComponents.entries()) {
-         if (!obj.owner.alive) {
-         this.removeRemote(id);
-         continue;
-         }
-         obj.step(data);
-         }
-         //*/
-
-        ///*
         for (let obj of data) {
             if (this.remoteComponents.has(obj.id)) {
                 this.remoteComponents.get(obj.id).step(obj);
             }
         }
-        //*/
-
-        /*
-         // TODO move this method to a more appropriate place/push data to scene, let scene update self?
-         // TODO objects on the client have remote position components, send data to them
-         for (let obj of data) {
-         if (this.scene._objects.has(obj.id)) {
-         let current = this.scene._objects.get(obj.id);
-         current.x = obj.x;
-         current.y = obj.y;
-         current.direction = obj.direction;
-         }
-         }
-         //*/
     }
 
     start(interval) {
@@ -73,8 +52,7 @@ export default class Remote {
     }
 
     sendCommand() {
-        // TODO poll controls, compose packet
-        this.emit('command', null);
+        this.emit('command', this.input);
     }
 
     emit(event, data) {

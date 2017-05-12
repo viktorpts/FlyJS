@@ -16,8 +16,11 @@ export default class Scene {
     }
 
     removeObject(id) {
-        this._objects.delete(id);
-        // TODO unsubscribe event handlers
+        if (this._objects.has(id)) {
+            this._objects.get(id).alive = false; // Make sure other collections can register the removal
+            this._objects.delete(id);
+            // TODO unsubscribe event handlers
+        }
     }
 
     // TODO replace with register functions?

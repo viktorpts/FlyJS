@@ -3,6 +3,8 @@ import Environment from './enums/Environment.js';
 import Remote from './remote/Remote.js';
 import SceneComposer from './composers/SceneComposer.js';
 import ServiceLocator from './utility/ServiceLocator.js';
+import RemoteControl from './components/RemoteControl.js';
+import Keyboard from './input/Keyboard.js';
 
 console.log('Loading components...');
 
@@ -28,17 +30,23 @@ let PLAYERS = new Map();
 
 io.sockets.on('connection', function (socket) {
     CONNECTIONS.set(socket.id, socket);
-    let player = {x: 0, y: 0, direction: 0};
+    let playerPosition = {x: 0, y: -500, direction: 0};
     // Send scene to new player
     socket.emit('initScene', game.scene.serialize());
-    // Broadcast to other players
-    socket.broadcast.emit('newPlayer', {id: socket.id});
-    // Add existing players
-    Array.from(PLAYERS.keys()).forEach(p => {
-        socket.emit('newPlayer', {id: p});
-    });
     // Add to local pool
-    PLAYERS.set(socket.id, player);
+    PLAYERS.set(socket.id, playerPosition);
+    let player = game.playerJoined(playerPosition);
+    let input = new Keyboard();
+    player.addComponent(new RemoteControl(player, input));
+    playerPosition.remoteId = player.id;
+    // Broadcast to other players
+    socket.broadcast.emit('newPlayer', playerPosition);
+    // Add existing players
+    Array.from(PLAYERS.values()).forEach(p => {
+        socket.emit('newPlayer', p);
+    });
+    // Send back tracking ID and position
+    socket.emit('joinSuccess', playerPosition);
 
     // Report active connections
     console.log('Client connected with ID ' + socket.id);
@@ -46,15 +54,16 @@ io.sockets.on('connection', function (socket) {
     // Attach packet listeners
     socket.on('disconnect', function (data) {
         CONNECTIONS.delete(socket.id);
+        socket.broadcast.emit('playerLeft', PLAYERS.get(socket.id));
         PLAYERS.delete(socket.id);
-        socket.broadcast.emit('playerLeft', {id: socket.id});
+        game.playerLeft(player.id);
         console.log('Client ' + socket.id + ' disconnected');
     });
 
-    socket.on('newPos', function (data) {
-        player.x = data.x;
-        player.y = data.y;
-        player.direction = data.direction;
+    socket.on('command', function (data) {
+        if (data) {
+            input.keysPressed = data.keysPressed;
+        }
     });
 });
 
