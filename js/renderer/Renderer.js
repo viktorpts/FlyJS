@@ -1,4 +1,5 @@
 import Layer from './Layer.js';
+import Config from '../config.js';
 
 export default class Renderer {
     constructor(canvas, palette) {
@@ -18,27 +19,8 @@ export default class Renderer {
         ];
     }
 
-    addObject(graphicsComponent, layerId) {
-        this.layers[layerId].addObject(graphicsComponent);
-    }
-
-    beginDraw(x = 0, y = 350) {
-        this.ctx.clearRect(0, 0, 800, 600);
-
-        // Center camera
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        this.ctx.scale(1, 1);
-
-        // Draw ground
-        this.ctx.beginPath();
-        this.ctx.moveTo(-5000, 550);
-        this.ctx.lineTo(5000, 550);
-        this.ctx.stroke();
-    }
-
-    endDraw() {
-        this.ctx.restore();
+    addObject(graphicsComponent) {
+        this.layers[graphicsComponent.owner.layer].addObject(graphicsComponent);
     }
 
     drawObject(graphicsComponent) {
@@ -63,9 +45,12 @@ export default class Renderer {
         //this.ctx.fillText((obj.velX * obj.velX + obj.velY * obj.velY).toFixed(2), obj.x - 20, obj.y - 20);
     }
 
-    // TODO dynamic screen size
     draw(x = 0, y = 0) {
-        this.ctx.clearRect(0, 0, 800, 600);
+        // Adjust coordinates to center on player based on screen resolution
+        x = Config.SCREEN_WIDTH * 0.5 - x;
+        y = Config.SCREEN_HEIGHT * 0.5 - y;
+
+        this.ctx.clearRect(0, 0, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
 
         // Center camera
         this.ctx.save();
@@ -74,6 +59,7 @@ export default class Renderer {
             this.drawLayer(layer, x, y);
         }
 
+        // TODO Add ground scenery and collision
         // Draw ground
         this.ctx.translate(x, y);
         this.ctx.beginPath();

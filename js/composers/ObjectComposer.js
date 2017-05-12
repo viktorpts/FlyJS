@@ -9,26 +9,12 @@ import ObjectType from '../enums/ObjectType.js';
 import HorizontalScroll from '../components/HorizontalScroll.js';
 import HorizontalWarp from '../components/HorizontalWarp.js';
 import SimpleAi from '../components/ai/SimpleAi.js';
+import ServiceLocator from '../utility/ServiceLocator.js';
 
 
 export default class ObjectComposer {
     constructor(environment) {
         this.environment = environment;
-        this.init();
-    }
-
-    init() {
-        if (this.environment == Environment.CLIENT) {
-            // Pull renderer
-            //this.renderer = null;
-            // TODO renderer added externally
-        } else if (this.environment == Environment.SERVER) {
-            // Pull sockets
-        }
-    }
-
-    setRenderer(renderer) {
-        this.renderer = renderer;
     }
 
     makeShip(x, y, dir) {
@@ -38,7 +24,7 @@ export default class ObjectComposer {
             let body = new PhysicsBody(ship);
             ship.addComponent(body);
         } else if (this.environment === Environment.CLIENT) {
-            let graphics = new Graphics(ship, SpriteType.PLANE, this.renderer, 5);
+            let graphics = new Graphics(ship, SpriteType.PLANE);
             ship.addComponent(graphics);
         }
 
@@ -65,7 +51,7 @@ export default class ObjectComposer {
         let player = new Entity(ObjectType.SHIP, x, y, dir);
 
         let body = new PhysicsBody(player);
-        let graphics = new Graphics(player, SpriteType.PLANE, this.renderer, 5);
+        let graphics = new Graphics(player, SpriteType.PLANE);
         let input = new Keyboard();
         input.attachEventListeners(window);
         let controls = new PlayerControl(player, input);
@@ -81,7 +67,7 @@ export default class ObjectComposer {
     makeRemotePlayer(x, y, dir) {
         let remotePlayer = new Entity(ObjectType.SHIP, x, y, dir);
 
-        let graphics = new Graphics(remotePlayer, SpriteType.PLANE, this.renderer, 5);
+        let graphics = new Graphics(remotePlayer, SpriteType.PLANE);
         // TODO add remote position component, remove direct update from Remote module
         let remotePosition = null;
 
@@ -91,17 +77,15 @@ export default class ObjectComposer {
     }
 
     makeCloud(x, y, layer) {
-        let cloud = new Entity(ObjectType.CLOUD, x, y);
+        let cloud = new Entity(ObjectType.CLOUD, x, y, 0, layer);
 
         if (this.environment === Environment.SERVER) {
             let scroll = new HorizontalScroll(cloud, 1);
             let warp = new HorizontalWarp(cloud);
             cloud.addComponent(scroll);
             cloud.addComponent(warp);
-            cloud.layer = layer;
         } else if (this.environment === Environment.CLIENT) {
-            let graphics = new Graphics(cloud, SpriteType.CLOUD, this.renderer, layer);
-            graphics.scale = 0.5;
+            let graphics = new Graphics(cloud, SpriteType.CLOUD, 0.5);
             cloud.addComponent(graphics);
         }
 

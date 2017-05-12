@@ -2,6 +2,9 @@ import Game from './game.js';
 import Environment from './enums/Environment.js';
 import Remote from './remote/Remote.js';
 import SceneComposer from './composers/SceneComposer.js';
+import ServiceLocator from './utility/ServiceLocator.js';
+
+ServiceLocator.init(Environment.SERVER);
 
 console.log('Loading components...');
 
@@ -55,10 +58,9 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-let game = new Game(Environment.SERVER, {
-    composer: new SceneComposer(Environment.SERVER),
-    remote: new Remote(Environment.SERVER, io)
-});
+let game = new Game(Environment.SERVER,
+    new SceneComposer(Environment.SERVER),
+    new Remote(Environment.SERVER, io));
 
 console.log('Initializing game...');
 game.start();
@@ -67,11 +69,3 @@ console.log('Starting server on port 3000...');
 server.listen(3000);
 
 console.log('Ready.');
-
-//setInterval(update, 15);
-
-function update() {
-    let packet = {};
-    Array.from(PLAYERS.entries()).forEach(kvp => packet[kvp[0]] = kvp[1]);
-    io.emit('playerPos', packet);
-}

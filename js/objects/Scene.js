@@ -41,10 +41,10 @@ export default class Scene {
         return result;
     }
 
-    getSync() {
+    getDelta() {
         let result = [];
         for (let obj of this._objects) {
-            result.push(obj[1].getSync());
+            result.push(obj[1].getDelta());
         }
         return result;
     }

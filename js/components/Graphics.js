@@ -1,14 +1,14 @@
 import Component from './Component.js';
+import ServiceLocator from '../utility/ServiceLocator.js';
 
 export default class Graphics extends Component {
-    constructor(owner, sprite, renderer, layer) {
+    constructor(owner, sprite, scale = 0.1) {
         super(owner);
 
         this.sprite = sprite;
-        this.scale = 0.1;
+        this.scale = scale;
 
-        owner.layer = layer;
-
-        renderer.addObject(this, layer);
+        // TODO bit cheeky?
+        ServiceLocator.Renderer.addObject(this);
     }
 }

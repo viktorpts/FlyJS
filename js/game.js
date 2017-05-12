@@ -3,11 +3,13 @@ import Environment from './enums/Environment.js';
 import Player from './objects/dynamic/Player.js';
 import Scene from './objects/Scene.js';
 import ObjectComposer from './composers/ObjectComposer.js';
+import ServiceLocator from './utility/ServiceLocator.js';
 
 
 export default class Game {
-    constructor(environment, componentPack) {
+    constructor(environment, sceneComposer, remote) {
         this.environment = environment;
+        this.remote = remote;
         this.scene = new Scene();
         this.composer = new ObjectComposer(environment);
         this.lastFrame = null;
@@ -15,11 +17,10 @@ export default class Game {
 
         // TODO add components based on environment
         this.markDelta = {};
-        this.init(componentPack);
+        this.init(sceneComposer);
     }
 
-    init(componentPack) {
-        this.remote = componentPack.remote;
+    init(sceneComposer) {
         this.remote.addScene(this.scene);
 
         // Setup game components based on environment
@@ -37,8 +38,6 @@ export default class Game {
                 this.lastFrame = currentFrame;
                 return delta;
             };
-            this.renderer = componentPack.renderer;
-            this.composer.setRenderer(this.renderer);
             // TODO add input, register player with server
 
             // TODO add player from server after request
@@ -48,9 +47,10 @@ export default class Game {
             this.scene.addObject(this.player);
         }
 
+        // TODO maybe composer not necessary?
         // Load objects into scene (locally or remotely)
         // Needs to be done after renderer is initialized for the composer!
-        componentPack.composer.populate(this.scene, this.composer);
+        sceneComposer.populate(this.scene, this.composer);
     }
 
     start() {
@@ -65,6 +65,7 @@ export default class Game {
             this.lastFrame = Math.floor(performance.now());
             // Start command packet loop
             this.remote.start(Config.CLIENT_INTERVAL);
+            // TODO consider moving this to the renderer and adding a stop option
             // Start rendering loop
             let frameRenderer = function () {
                 this.main();
@@ -84,7 +85,7 @@ export default class Game {
 
         if (this.environment === Environment.CLIENT) {
             // TODO replace with draw event
-            this.renderer.draw(400-this.player.x, 300-this.player.y);
+            ServiceLocator.Renderer.draw(this.player.x, this.player.y);
         }
     }
 }

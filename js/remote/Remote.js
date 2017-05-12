@@ -39,7 +39,7 @@ export default class Remote {
     }
 
     sendDelta() {
-        this.emit('step', this.scene.getSync());
+        this.emit('step', this.scene.getDelta());
     }
 
     sendCommand() {

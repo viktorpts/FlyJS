@@ -2,7 +2,7 @@ import Observer from '../utility/Observer.js';
 import getId from '../utility/IdProvider.js';
 
 export default class Entity {
-    constructor(type, x = 0, y = 0, direction = 0) {
+    constructor(type, x = 0, y = 0, direction = 0, layer = 5) {
         /*
         if (new.target === Entity) {
             throw new TypeError("Cannot construct abstract instances directly.");
@@ -12,7 +12,7 @@ export default class Entity {
         this.id = getId();
         this.type = type;
         this.alive = true;
-        this.layer = 5;
+        this.layer = layer;
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -36,10 +36,6 @@ export default class Entity {
         }
     }
 
-    draw() {
-        this.post('draw', null);
-    }
-
     serialize() {
         return {
             type: this.type,
@@ -51,7 +47,7 @@ export default class Entity {
         }
     }
 
-    getSync() {
+    getDelta() {
         return {
             id: this.id,
             x: this.x,
