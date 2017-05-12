@@ -1,4 +1,6 @@
 export default {
     SHIP: 'ship',
-    CLOUD: 'cloud'
+    CLOUD: 'cloud',
+    TREE: 'tree',
+    BOX: 'box'
 }

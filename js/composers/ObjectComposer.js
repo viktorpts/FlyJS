@@ -10,6 +10,7 @@ import HorizontalScroll from '../components/HorizontalScroll.js';
 import HorizontalWarp from '../components/HorizontalWarp.js';
 import SimpleAi from '../components/ai/SimpleAi.js';
 import RemotePosition from '../components/RemotePosition.js';
+import GraphicsComposer from './GraphicsComposer.js';
 
 
 export default class ObjectComposer {
@@ -77,30 +78,48 @@ export default class ObjectComposer {
         return remotePlayer;
     }
 
+    // SERVER ONLY
     makeCloud(x, y, layer) {
         let cloud = new Entity(ObjectType.CLOUD, x, y, 0, layer);
 
-        if (this.environment === Environment.SERVER) {
-            let scroll = new HorizontalScroll(cloud, 1);
-            let warp = new HorizontalWarp(cloud);
-            cloud.addComponent(scroll);
-            cloud.addComponent(warp);
-        } else if (this.environment === Environment.CLIENT) {
-            let graphics = new Graphics(cloud, SpriteType.CLOUD, 0.5);
-            cloud.addComponent(graphics);
-        }
+        let scroll = new HorizontalScroll(cloud, 1);
+        let warp = new HorizontalWarp(cloud);
+        cloud.addComponent(scroll);
+        cloud.addComponent(warp);
 
         return cloud;
     }
 
+    // SERVER ONLY
+    makeTree(x, y, layer) {
+        let tree = new Entity(ObjectType.TREE, x, y, 0, layer);
+
+        return tree;
+    }
+
+    makeBox(x, y, layer) {
+        let box = new Entity(ObjectType.BOX, x, y, 0, layer);
+
+        return box;
+    }
+
+    /* Remote object props
+     type: this.type,
+     layer: this.layer,
+     id: this.id,
+     x: this.x,
+     y: this.y,
+     direction: this.direction
+     */
     makeRemoteObject(remoteObj) {
-        switch (remoteObj.type) {
-            case ObjectType.CLOUD:
-                return this.makeCloud(remoteObj.x, remoteObj.y, remoteObj.layer, remoteObj.id);
-            case ObjectType.SHIP:
-                //let localObj = this.makeShip(remoteObj.x, remoteObj.y, remoteObj.direction);
-                let localObj = this.makeRemotePlayer(remoteObj.x, remoteObj.y, remoteObj.direction, remoteObj.id);
-                return localObj;
-        }
+        let obj = new Entity(remoteObj.type, remoteObj.x, remoteObj.y, remoteObj.direction, remoteObj.layer);
+
+        let graphics = GraphicsComposer.makeGraphics(obj);
+        let remotePosition = new RemotePosition(obj, remoteObj.id);
+
+        obj.addComponent(graphics);
+        obj.addComponent(remotePosition);
+
+        return obj;
     }
 }

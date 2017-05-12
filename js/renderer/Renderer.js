@@ -14,8 +14,8 @@ export default class Renderer {
             new Layer(0.8),
             new Layer(1), // Particle effects
             new Layer(1), // Main layer [5]
-            new Layer(2),
-            new Layer(4)
+            new Layer(1.25),
+            new Layer(1.5)
         ];
     }
 
@@ -46,14 +46,11 @@ export default class Renderer {
     }
 
     draw(x = 0, y = 0) {
-        // Adjust coordinates to center on player based on screen resolution
-        x = Config.SCREEN_WIDTH * 0.5 - x;
-        y = Config.SCREEN_HEIGHT * 0.5 - y;
-
         this.ctx.clearRect(0, 0, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
 
         // Center camera
         this.ctx.save();
+        this.ctx.translate(Config.SCREEN_WIDTH * 0.5, Config.SCREEN_HEIGHT * 0.5);
 
         for (let layer of this.layers) {
             this.drawLayer(layer, x, y);
@@ -61,7 +58,7 @@ export default class Renderer {
 
         // TODO Add ground scenery and collision
         // Draw ground
-        this.ctx.translate(x, y);
+        this.ctx.translate(-x, -y);
         this.ctx.beginPath();
         this.ctx.moveTo(-5000, 550);
         this.ctx.lineTo(5000, 550);
@@ -72,9 +69,8 @@ export default class Renderer {
 
     drawLayer(layer, x, y) {
         this.ctx.save();
-        // TODO check scaling and scrolling
         this.ctx.scale(layer.scale, layer.scale);
-        this.ctx.translate(x, y);
+        this.ctx.translate(-x, -y);
 
         for (let [id, obj] of layer.graphicsComponents.entries()) {
             if (!obj.owner.alive) {

@@ -46,24 +46,51 @@ export default class SceneComposer {
             scene.addObject(myShip);
         }
 
-        /*
-         for (let i = 0; i < 50; i++) {
-         let x = Math.random() * 10000 - 5000;
-         let y = Math.random() * 400 - 100;
-         let cloud = new Cloud(x, y);
-         cloud.wind = 0.2;
+        // Add foreground trees
+        for (let i = 0; i < 20; i++) {
+            let x = Math.random() * 10000 - 5000;
+            let y = Math.random() * 10 + 586;
+            let tree = composer.makeTree(x, y, 6);
+            scene.addObject(tree);
 
-         scene.addObject(cloud);
-         }
+            x = Math.random() * 10000 - 5000;
+            y = Math.random() * 20 + 596;
+            tree = composer.makeTree(x, y, 7);
+            scene.addObject(tree);
+        }
 
-         for (let i = 0; i < 100; i++) {
-         let x = Math.random() * 10000 - 5000;
-         let y = Math.random() * 200 + 550;
-         let tree = new Tree(x, y);
+        // TREES
+        for (let i = 0; i < 30; i++) {
+            let x = Math.random() * 10000 - 5000;
+            let y = 514 - Math.random() * 20;
+            let tree = composer.makeTree(x, y, 3);
+            scene.addObject(tree);
 
-         scene.addObject(tree);
-         }
-         //*/
+            x = Math.random() * 10000 - 5000;
+            y = y = 494 - Math.random() * 20;
+            tree = composer.makeTree(x, y, 2);
+            scene.addObject(tree);
+
+            x = Math.random() * 10000 - 5000;
+            y = y = 474 - Math.random() * 20;
+            tree = composer.makeTree(x, y, 1);
+            scene.addObject(tree);
+
+            x = Math.random() * 10000 - 5000;
+            y = y = 454 - Math.random() * 20;
+            tree = composer.makeTree(x, y, 0);
+            scene.addObject(tree);
+        }
+
+        // Add origin
+        scene.addObject(composer.makeBox(0, 0, 0));
+        scene.addObject(composer.makeBox(0, 0, 1));
+        scene.addObject(composer.makeBox(0, 0, 2));
+        scene.addObject(composer.makeBox(0, 0, 3));
+        scene.addObject(composer.makeBox(0, 0, 4));
+        scene.addObject(composer.makeBox(0, 0, 5));
+        scene.addObject(composer.makeBox(0, 0, 6));
+        scene.addObject(composer.makeBox(0, 0, 7));
     }
 
     populateFromRemote(scene, composer) {
