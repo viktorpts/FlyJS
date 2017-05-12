@@ -30,11 +30,11 @@ export default class PhysicsBody extends Component {
         this.velY += 0.05;
 
         // Ground
-        if (this.owner.y > 550) {
+        if (this.owner.y > 0) {
             if (this.velY > 0) {
                 this.velY = 0;
             }
-            this.owner.y = 550;
+            this.owner.y = 0;
         }
 
         this.owner.x += this.velX;

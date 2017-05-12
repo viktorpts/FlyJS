@@ -30,6 +30,7 @@ export default class Renderer {
 
         this.ctx.translate(obj.x, obj.y);
         this.ctx.rotate(obj.direction);
+        this.ctx.translate(graphicsComponent.xOffset * graphicsComponent.scale, graphicsComponent.yOffset * graphicsComponent.scale);
 
         let img = this.palette[graphicsComponent.sprite];
         let w = img.width * graphicsComponent.scale;
@@ -60,8 +61,8 @@ export default class Renderer {
         // Draw ground
         this.ctx.translate(-x, -y);
         this.ctx.beginPath();
-        this.ctx.moveTo(-5000, 550);
-        this.ctx.lineTo(5000, 550);
+        this.ctx.moveTo(-5000, 0);
+        this.ctx.lineTo(5000, 0);
         this.ctx.stroke();
 
         this.ctx.restore();

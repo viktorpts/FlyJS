@@ -41,7 +41,7 @@ export default class Game {
 
             // TODO add player from server after request
             // TODO player object ID must be set from provider!
-            this.player = this.composer.makePlayer(0, 0, 0);
+            this.player = this.composer.makePlayer(0, -550, 0);
             this.player.id = 'localPlayer';
             this.scene.addObject(this.player);
         }
