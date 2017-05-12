@@ -69,7 +69,6 @@ export default class SceneComposer {
     populateFromRemote(scene, composer) {
         for (let obj of this.data) {
             let localObj = composer.makeRemoteObject(obj);
-            localObj.id = obj.id; // Explicitly set id, TODO THIS WILL CONFLICT WITH LOCAL PROVIDER
             scene.addObject(localObj);
         }
     }

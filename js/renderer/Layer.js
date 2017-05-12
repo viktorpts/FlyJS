@@ -7,4 +7,8 @@ export default class Layer {
     addObject(component) {
         this.graphicsComponents.set(component.owner.id, component);
     }
+
+    removeObject(id) {
+        this.graphicsComponents.delete(id);
+    }
 }

@@ -4,8 +4,6 @@ import Remote from './remote/Remote.js';
 import SceneComposer from './composers/SceneComposer.js';
 import ServiceLocator from './utility/ServiceLocator.js';
 
-ServiceLocator.init(Environment.SERVER);
-
 console.log('Loading components...');
 
 let express = require('express');
@@ -22,6 +20,8 @@ app.use('/src', express.static(path.join(__dirname, '/../..') + '/src'));
 
 console.log('Opening sockets...');
 let io = require('socket.io')(server);
+
+ServiceLocator.init(Environment.SERVER, io);
 
 let CONNECTIONS = new Map();
 let PLAYERS = new Map();
@@ -59,8 +59,7 @@ io.sockets.on('connection', function (socket) {
 });
 
 let game = new Game(Environment.SERVER,
-    new SceneComposer(Environment.SERVER),
-    new Remote(Environment.SERVER, io));
+    new SceneComposer(Environment.SERVER));
 
 console.log('Initializing game...');
 game.start();

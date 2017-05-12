@@ -9,7 +9,7 @@ import ObjectType from '../enums/ObjectType.js';
 import HorizontalScroll from '../components/HorizontalScroll.js';
 import HorizontalWarp from '../components/HorizontalWarp.js';
 import SimpleAi from '../components/ai/SimpleAi.js';
-import ServiceLocator from '../utility/ServiceLocator.js';
+import RemotePosition from '../components/RemotePosition.js';
 
 
 export default class ObjectComposer {
@@ -64,14 +64,15 @@ export default class ObjectComposer {
     }
 
     // CLIENT ONLY
-    makeRemotePlayer(x, y, dir) {
+    makeRemotePlayer(x, y, dir, remoteId) {
         let remotePlayer = new Entity(ObjectType.SHIP, x, y, dir);
 
         let graphics = new Graphics(remotePlayer, SpriteType.PLANE);
         // TODO add remote position component, remove direct update from Remote module
-        let remotePosition = null;
+        let remotePosition = new RemotePosition(remotePlayer, remoteId);
 
         remotePlayer.addComponent(graphics);
+        remotePlayer.addComponent(remotePosition);
 
         return remotePlayer;
     }
@@ -95,9 +96,10 @@ export default class ObjectComposer {
     makeRemoteObject(remoteObj) {
         switch (remoteObj.type) {
             case ObjectType.CLOUD:
-                return this.makeCloud(remoteObj.x, remoteObj.y, remoteObj.layer);
+                return this.makeCloud(remoteObj.x, remoteObj.y, remoteObj.layer, remoteObj.id);
             case ObjectType.SHIP:
-                let localObj = this.makeShip(remoteObj.x, remoteObj.y, remoteObj.direction);
+                //let localObj = this.makeShip(remoteObj.x, remoteObj.y, remoteObj.direction);
+                let localObj = this.makeRemotePlayer(remoteObj.x, remoteObj.y, remoteObj.direction, remoteObj.id);
                 return localObj;
         }
     }

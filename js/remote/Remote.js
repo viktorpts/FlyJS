@@ -6,24 +6,54 @@ export default class Remote {
         this.io = io;
         this.timer = null;
         this.scene = null;
+        this.remoteComponents = new Map();
     }
 
-    step(data) {
-        // TODO move this method to a more appropriate place/push data to scene, let scene update self?
-        // TODO objects on the client have remote position components, send data to them
-        for (let obj of data) {
-            if (this.scene._objects.has(obj.id)) {
-                let current = this.scene._objects.get(obj.id);
-                current.x = obj.x;
-                current.y = obj.y;
-                current.direction = obj.direction;
-            }
-        }
+    addRemote(remoteComponent) {
+        this.remoteComponents.set(remoteComponent.remoteId, remoteComponent);
     }
 
-    // TODO find a more elegant solution to registering the scene (fix in app, server)
+    removeRemote(remoteId) {
+        this.remoteComponents.delete(remoteId);
+    }
+
     addScene(scene) {
         this.scene = scene;
+    }
+
+
+    // Receive scene delta from server
+    step(data) {
+        /*
+         for (let [id, obj] of this.remoteComponents.entries()) {
+         if (!obj.owner.alive) {
+         this.removeRemote(id);
+         continue;
+         }
+         obj.step(data);
+         }
+         //*/
+
+        ///*
+        for (let obj of data) {
+            if (this.remoteComponents.has(obj.id)) {
+                this.remoteComponents.get(obj.id).step(obj);
+            }
+        }
+        //*/
+
+        /*
+         // TODO move this method to a more appropriate place/push data to scene, let scene update self?
+         // TODO objects on the client have remote position components, send data to them
+         for (let obj of data) {
+         if (this.scene._objects.has(obj.id)) {
+         let current = this.scene._objects.get(obj.id);
+         current.x = obj.x;
+         current.y = obj.y;
+         current.direction = obj.direction;
+         }
+         }
+         //*/
     }
 
     start(interval) {

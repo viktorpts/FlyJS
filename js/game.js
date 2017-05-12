@@ -7,9 +7,8 @@ import ServiceLocator from './utility/ServiceLocator.js';
 
 
 export default class Game {
-    constructor(environment, sceneComposer, remote) {
+    constructor(environment, sceneComposer) {
         this.environment = environment;
-        this.remote = remote;
         this.scene = new Scene();
         this.composer = new ObjectComposer(environment);
         this.lastFrame = null;
@@ -21,7 +20,7 @@ export default class Game {
     }
 
     init(sceneComposer) {
-        this.remote.addScene(this.scene);
+        ServiceLocator.Remote.addScene(this.scene);
 
         // Setup game components based on environment
         if (this.environment === Environment.SERVER) {
@@ -59,12 +58,12 @@ export default class Game {
             this.lastFrame = process.hrtime();
             // Start client sync loop
             this.timer = setInterval(this.main.bind(this), Config.SIMULATION_INTERVAL);
-            this.remote.start(Config.SERVER_INTERVAL);
+            ServiceLocator.Remote.start(Config.SERVER_INTERVAL);
         } else if (this.environment === Environment.CLIENT) {
             // Initialize starting time
             this.lastFrame = Math.floor(performance.now());
             // Start command packet loop
-            this.remote.start(Config.CLIENT_INTERVAL);
+            ServiceLocator.Remote.start(Config.CLIENT_INTERVAL);
             // TODO consider moving this to the renderer and adding a stop option
             // Start rendering loop
             let frameRenderer = function () {

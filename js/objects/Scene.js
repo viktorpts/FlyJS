@@ -6,6 +6,10 @@ export default class Scene {
         this._observer = new Observer();
     }
 
+    post(eventType, data) {
+        this._observer.fire(eventType, data);
+    }
+
     addObject(obj) {
         this._objects.set(obj.id, obj);
         // TODO register observer with object

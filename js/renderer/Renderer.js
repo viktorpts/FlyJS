@@ -76,8 +76,13 @@ export default class Renderer {
         this.ctx.scale(layer.scale, layer.scale);
         this.ctx.translate(x, y);
 
-        for (let obj of layer.graphicsComponents) {
-            this.drawObject(obj[1]);
+        for (let [id, obj] of layer.graphicsComponents.entries()) {
+            if (!obj.owner.alive) {
+                layer.removeObject(id);
+                continue;
+            }
+
+            this.drawObject(obj);
         }
 
         this.ctx.restore();

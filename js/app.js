@@ -7,11 +7,9 @@ import SceneComposer from './composers/SceneComposer.js';
 import ServiceLocator from './utility/ServiceLocator.js';
 
 export default (function () {
-    ServiceLocator.init(Environment.CLIENT);
-
     // Initiate connection
     let socket = io();
-    let remote = new Remote(Environment.CLIENT, socket);
+    ServiceLocator.init(Environment.CLIENT, socket);
 
     /* Debug console */
     let canvas = document.getElementById('canvas');
@@ -25,15 +23,14 @@ export default (function () {
         dev.draw();
 
         let game = new Game(Environment.CLIENT,
-            new SceneComposer(Environment.CLIENT, data),
-            remote);
+            new SceneComposer(Environment.CLIENT, data));
         makeGame(game);
     });
 
     socket.on('step', function (data) {
         dev.log('Updating scene');
         dev.draw();
-        remote.step(data);
+        ServiceLocator.Remote.step(data);
     });
 
     function makeGame(game) {
