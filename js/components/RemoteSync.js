@@ -6,6 +6,7 @@ export default class RemoteSync extends Component {
         super(owner);
 
         this.remoteId = remoteId;
+        this.log
 
         ServiceLocator.Remote.addRemote(this);
     }
@@ -13,10 +14,10 @@ export default class RemoteSync extends Component {
     step(data) {
         // TODO sync with server if there's a discrepancy
         ServiceLocator.Renderer.debug[1] = 'Remote location: ' + data.x.toFixed(0) + ':' + data.y.toFixed(0);
-        /*
+        ///*
         this.owner.x = data.x;
         this.owner.y = data.y;
         this.owner.direction = data.direction;
-        */
+        //*/
     }
 }
