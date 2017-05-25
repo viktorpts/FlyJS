@@ -1,4 +1,5 @@
 import Environment from '../enums/Environment.js';
+import config from '../config.js';
 
 export default class Remote {
     constructor(environment, io) {
@@ -49,7 +50,7 @@ export default class Remote {
     }
 
     sendDelta() {
-        this.emit('step', { order: this.order++, scene: this.scene.getDelta() });
+        this.emit('step', { order: this.order+=config.SERVER_INTERVAL, scene: this.scene.getDelta() });
     }
 
     sendCommand() {
