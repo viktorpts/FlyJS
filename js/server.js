@@ -47,10 +47,10 @@ io.sockets.on('connection', function (socket) {
     // Send back tracking ID and position
     socket.emit('joinSuccess', playerPosition);
 
-    // Add to local pool AFTER transmitting the player pool to the newly joined, to prevent double adding of client
+    // Add to local pool AFTER transmitting to new player, to prevent adding himself twice
     PLAYERS.set(socket.id, playerPosition);
 
-    // Report active connections
+    // Report new connection
     console.log('Client connected with ID ' + socket.id);
 
     // Attach packet listeners

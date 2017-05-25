@@ -17,7 +17,7 @@ export default (function () {
         makeGame(game);
 
         socket.on('step', function (data) {
-            ServiceLocator.Remote.step(data);
+            ServiceLocator.Remote.step(data.order, data.scene);
         });
 
         socket.on('joinSuccess', function (data) {

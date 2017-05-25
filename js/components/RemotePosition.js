@@ -10,7 +10,7 @@ export default class RemotePosition extends Component {
         ServiceLocator.Remote.addRemote(this);
     }
 
-    step(data) {
+    step(order, data) {
         this.owner.x = data.x;
         this.owner.y = data.y;
         this.owner.direction = data.direction;

@@ -27,10 +27,10 @@ export default class Remote {
     }
 
     // Receive scene delta from server
-    step(data) {
-        for (let obj of data) {
+    step(order, scene) {
+        for (let obj of scene) {
             if (this.remoteComponents.has(obj.id)) {
-                this.remoteComponents.get(obj.id).step(obj);
+                this.remoteComponents.get(obj.id).step(order, obj);
             }
         }
     }
@@ -38,6 +38,7 @@ export default class Remote {
     start(interval) {
         if (this.environment === Environment.SERVER) {
             this.timer = setInterval(this.sendDelta.bind(this), interval);
+            this.order = 0;
         } else if (this.environment === Environment.CLIENT) {
             this.timer = setInterval(this.sendCommand.bind(this), interval);
         }
@@ -48,7 +49,7 @@ export default class Remote {
     }
 
     sendDelta() {
-        this.emit('step', this.scene.getDelta());
+        this.emit('step', { order: this.order++, scene: this.scene.getDelta() });
     }
 
     sendCommand() {
