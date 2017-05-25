@@ -6,7 +6,6 @@ export default class RemoteSync extends Component {
         super(owner);
 
         this.remoteId = remoteId;
-        this.log
 
         ServiceLocator.Remote.addRemote(this);
     }

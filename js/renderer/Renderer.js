@@ -46,7 +46,7 @@ export default class Renderer {
         this.ctx.restore();
 
         // Debug info
-        //this.ctx.fillText((obj.velX * obj.velX + obj.velY * obj.velY).toFixed(2), obj.x - 20, obj.y - 20);
+        this.ctx.fillText((obj.id), obj.x - 20, obj.y - 20);
     }
 
     draw(x = 0, y = 0) {

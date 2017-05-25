@@ -21,7 +21,7 @@ export default class Game {
     playerJoined(playerPosition) {
         let player = this.composer.makeShip(playerPosition.x, playerPosition.y, playerPosition.direction);
         this.scene.addObject(player);
-        console.log(playerPosition.remoteId || playerPosition.id + ' joined');
+        console.log(playerPosition.remoteId || player.id + ' joined');
 
         return player;
     }

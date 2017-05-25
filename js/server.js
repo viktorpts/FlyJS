@@ -33,8 +33,7 @@ io.sockets.on('connection', function (socket) {
     let playerPosition = {x: 0, y: -500, direction: 0};
     // Send scene to new player
     socket.emit('initScene', game.scene.serialize());
-    // Add to local pool
-    PLAYERS.set(socket.id, playerPosition);
+
     let player = game.playerJoined(playerPosition);
     let input = new Keyboard();
     player.addComponent(new RemoteControl(player, input));
@@ -47,6 +46,9 @@ io.sockets.on('connection', function (socket) {
     });
     // Send back tracking ID and position
     socket.emit('joinSuccess', playerPosition);
+
+    // Add to local pool AFTER transmitting the player pool to the newly joined, to prevent double adding of client
+    PLAYERS.set(socket.id, playerPosition);
 
     // Report active connections
     console.log('Client connected with ID ' + socket.id);
