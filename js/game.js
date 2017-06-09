@@ -12,6 +12,7 @@ export default class Game {
         this.composer = new ObjectComposer(environment);
         this.lastFrame = null;
         this.delta = 0; // Milliseconds
+        this.currentOffset = 0;
 
         this.markDelta = {};
         this.init(sceneComposer);
@@ -93,7 +94,8 @@ export default class Game {
         // Check physics step
         while (this.delta >= Config.SIMULATION_INTERVAL) {
             this.delta -= Config.SIMULATION_INTERVAL;
-            this.scene.update();
+            this.currentOffset += Config.SIMULATION_INTERVAL;
+            this.scene.update(this.currentOffset);
         }
 
         if (this.environment === Environment.CLIENT) {

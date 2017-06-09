@@ -7,7 +7,6 @@ export default class RemotePosition extends Component {
         super(owner);
 
         this.remoteId = remoteId;
-        this.currentOffset = 0;
         this.baseFrame = {order: 0, data: this.owner.serialize()};
         this.nextFrame = {order: 1, data: this.owner.serialize()};
 
@@ -24,28 +23,19 @@ export default class RemotePosition extends Component {
         }
         // If new frame is newer than base frame, assume new frame
         if (this.baseFrame.order < order) {
-            // Update current offset
-            this.currentOffset -= (order - this.baseFrame.order);
-            if (this.currentOffset < -config.SERVER_INTERVAL) {
-                this.currentOffset = 0;
-            }
-            if (this.currentOffset > config.SERVER_INTERVAL) {
-                this.currentOffset = 0;
-            }
-
             this.baseFrame.order = order;
             this.baseFrame.data = data;
         }
     }
 
-    update() {
-        this.currentOffset += config.SIMULATION_INTERVAL;
+    update(offset) {
+        let currentOffset = offset - this.baseFrame.order;
         let knownOffset = this.nextFrame.order - this.baseFrame.order;
 
         let x, y, direction;
-        x = this.baseFrame.data.x + (this.nextFrame.data.x - this.baseFrame.data.x) * this.currentOffset / knownOffset;
-        y = this.baseFrame.data.y + (this.nextFrame.data.y - this.baseFrame.data.y) * this.currentOffset / knownOffset;
-        direction = this.baseFrame.data.direction + (this.nextFrame.data.direction - this.baseFrame.data.direction) * this.currentOffset / knownOffset;
+        x = this.baseFrame.data.x + (this.nextFrame.data.x - this.baseFrame.data.x) * currentOffset / knownOffset;
+        y = this.baseFrame.data.y + (this.nextFrame.data.y - this.baseFrame.data.y) * currentOffset / knownOffset;
+        direction = this.baseFrame.data.direction + (this.nextFrame.data.direction - this.baseFrame.data.direction) * currentOffset / knownOffset;
 
         this.owner.x = x;
         this.owner.y = y;

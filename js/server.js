@@ -32,7 +32,7 @@ io.sockets.on('connection', function (socket) {
     CONNECTIONS.set(socket.id, socket);
     let playerPosition = {x: 0, y: -500, direction: 0};
     // Send scene to new player
-    socket.emit('initScene', game.scene.serialize());
+    socket.emit('initScene', { order: game.currentOffset, scene: game.scene.serialize() });
 
     let player = game.playerJoined(playerPosition);
     let input = new Keyboard();

@@ -5,6 +5,7 @@ import Remote from './remote/Remote.js';
 import SceneComposer from './composers/SceneComposer.js';
 import ServiceLocator from './utility/ServiceLocator.js';
 import RemotePosition from './components/RemotePosition.js';
+import config from './config.js';
 
 export default (function () {
     // Initiate connection
@@ -13,10 +14,14 @@ export default (function () {
 
     socket.on('initScene', function (data) {
         let game = new Game(Environment.CLIENT,
-            new SceneComposer(Environment.CLIENT, data));
+            new SceneComposer(Environment.CLIENT, data.scene));
+        game.currentOffset = data.order - config.SERVER_INTERVAL;
         makeGame(game);
 
         socket.on('step', function (data) {
+            if (data.order - game.currentOffset > config.SERVER_INTERVAL) {
+                game.currentOffset = data.order - config.SERVER_INTERVAL;
+            }
             ServiceLocator.Remote.step(data.order, data.scene);
         });
 

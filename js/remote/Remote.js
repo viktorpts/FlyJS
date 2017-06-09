@@ -39,6 +39,7 @@ export default class Remote {
     start(interval) {
         if (this.environment === Environment.SERVER) {
             this.timer = setInterval(this.sendDelta.bind(this), interval);
+            // TODO remote and game clocks are desynced on the server
             this.order = 0;
         } else if (this.environment === Environment.CLIENT) {
             this.timer = setInterval(this.sendCommand.bind(this), interval);

@@ -30,9 +30,9 @@ export default class Entity {
         this.components.push(component);
     }
 
-    update() {
+    update(offset) {
         for (let component of this.components) {
-            component.update();
+            component.update(offset);
         }
     }
 

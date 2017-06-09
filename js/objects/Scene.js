@@ -29,9 +29,9 @@ export default class Scene {
     }
 
     // Update objects
-    update() {
+    update(offset) {
         for (let [id, obj] of this._objects.entries()) {
-            obj.update();
+            obj.update(offset);
 
             // Remove dead entries
             if (!obj.alive) {

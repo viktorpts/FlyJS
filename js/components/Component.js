@@ -10,6 +10,6 @@ export default class Component {
     registerHandlers(observer) {
     }
 
-    update() {
+    update(offset) {
     }
 }
